@@ -1,30 +1,15 @@
-# -*- coding: utf-8 -*-
-import click
-import logging
-from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
+import tensorflow as tf
 
-
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
+def get_eeg() -> Path:
     """
-    logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+    This function downloads the eeg dataset from:
+    https://archive.ics.uci.edu/ml/datasets/EEG+Eye+State
+    and stores it in the given data dir. 
+    """
+    data_dir = "../../data/raw"
+    url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00264/EEG%20Eye%20State.arff"
+    datapath = tf.keras.utils.get_file(
+        "eeg", origin=url, untar=False, cache_dir=data_dir
+    )
 
-
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
-
-    # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[2]
-
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
-
-    main()
+    return data_dir
